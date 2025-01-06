@@ -1,0 +1,28 @@
+networks:
+  immo-network:
+    driver: bridge
+
+services:
+  immo-api:
+    build:
+      context: ./build
+      dockerfile: latest.Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    command: php -S 0.0.0.0:80 -t /var/www/html/public/
+    depends_on:
+      - immo-db
+    networks:
+      - immo-network
+
+  immo-db:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    env_file:
+      - .env
+    networks:
+      - immo-network
